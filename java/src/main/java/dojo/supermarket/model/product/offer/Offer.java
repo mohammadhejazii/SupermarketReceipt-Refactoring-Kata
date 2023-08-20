@@ -1,13 +1,14 @@
-package dojo.supermarket.model;
+package dojo.supermarket.model.product.offer;
 
 import dojo.supermarket.model.product.Product;
-import dojo.supermarket.model.product.offer.OfferType;
+import lombok.Getter;
 
+@Getter
 public class Offer {
 
-    OfferType offerType;
+    private final OfferType offerType;
     private final Product product;
-    double argument;
+    private final double argument;
 
     public Offer(OfferType offerType, Product product, double argument) {
         this.offerType = offerType;
@@ -15,7 +16,4 @@ public class Offer {
         this.product = product;
     }
 
-    Product getProduct() {
-        return product;
-    }
 }

@@ -2,6 +2,7 @@ package dojo.supermarket.model;
 
 import dojo.supermarket.model.product.Product;
 import dojo.supermarket.model.product.ProductQuantity;
+import dojo.supermarket.model.product.offer.Offer;
 import dojo.supermarket.model.product.offer.OfferType;
 import dojo.supermarket.model.receipt.Receipt;
 
