@@ -13,7 +13,7 @@ public class Receipt {
     private final List<ReceiptItem> items = new ArrayList<>();
     private final List<Discount> discounts = new ArrayList<>();
 
-    public BigDecimal getTotalPrice() {
+    public BigDecimal totalPrice() {
         BigDecimal total = BigDecimal.ZERO;
         for (ReceiptItem item : items) {
             total = total.add(item.getTotalPrice());
@@ -24,11 +24,11 @@ public class Receipt {
         return total;
     }
 
-    public void addProduct(Product p, double quantity, BigDecimal price, BigDecimal totalPrice) {
+    public void add(Product p, double quantity, BigDecimal price, BigDecimal totalPrice) {
         items.add(new ReceiptItem(p, quantity, price, totalPrice));
     }
 
-    public List<ReceiptItem> getItems() {
+    public List<ReceiptItem> items() {
         return Collections.unmodifiableList(items);
     }
 
@@ -36,7 +36,7 @@ public class Receipt {
         discounts.add(discount);
     }
 
-    public List<Discount> getDiscounts() {
+    public List<Discount> discounts() {
         return discounts;
     }
 }

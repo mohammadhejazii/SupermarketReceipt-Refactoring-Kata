@@ -12,11 +12,11 @@ public class Product {
         this.unit = unit;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
-    public ProductUnit getUnit() {
+    public ProductUnit unit() {
         return unit;
     }
 

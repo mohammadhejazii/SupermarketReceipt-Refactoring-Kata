@@ -31,12 +31,12 @@ public class ReceiptItem {
         ReceiptItem that = (ReceiptItem) o;
         return that.getPrice().compareTo(getPrice()) == 0 &&
                 that.getTotalPrice().compareTo(getTotalPrice()) == 0 &&
-                Double.compare(that.quantity, quantity) == 0 &&
-                Objects.equals(product, that.product);
+                Double.compare(that.getQuantity(), getQuantity()) == 0 &&
+                Objects.equals(that.getProduct(), getProduct());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(product, price, totalPrice, quantity);
+        return Objects.hash(getProduct(), getPrice(), getTotalPrice(), getQuantity());
     }
 }

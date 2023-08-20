@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public interface ShopCatalog {
 
-    void addProduct(Product product, BigDecimal price);
+    void add(Product product, BigDecimal price);
 
-    BigDecimal getUnitPrice(Product product);
+    BigDecimal priceOfProduct(Product product);
 }

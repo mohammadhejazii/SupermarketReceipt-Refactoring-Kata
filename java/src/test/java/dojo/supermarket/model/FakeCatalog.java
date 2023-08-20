@@ -12,13 +12,13 @@ public class FakeCatalog implements ShopCatalog {
     private Map<String, BigDecimal> prices = new HashMap<>();
 
     @Override
-    public void addProduct(Product product, BigDecimal price) {
-        this.products.put(product.getName(), product);
-        this.prices.put(product.getName(), price);
+    public void add(Product product, BigDecimal price) {
+        this.products.put(product.name(), product);
+        this.prices.put(product.name(), price);
     }
 
     @Override
-    public BigDecimal getUnitPrice(Product p) {
-        return this.prices.get(p.getName());
+    public BigDecimal priceOfProduct(Product p) {
+        return this.prices.get(p.name());
     }
 }

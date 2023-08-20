@@ -23,24 +23,24 @@ public class SupermarketTest {
     public void tenPercentDiscount() {
         ShopCatalog catalog = new FakeCatalog();
         Product toothbrush = new Product("toothbrush", ProductUnit.EACH);
-        catalog.addProduct(toothbrush, BigDecimal.valueOf(0.99));
+        catalog.add(toothbrush, BigDecimal.valueOf(0.99));
         Product apples = new Product("apples", ProductUnit.KILO);
-        catalog.addProduct(apples, BigDecimal.valueOf(1.99));
+        catalog.add(apples, BigDecimal.valueOf(1.99));
 
         Teller teller = new Teller(catalog);
-        teller.addSpecialOffer(OfferType.TEN_PERCENT_DISCOUNT, toothbrush, 10.0);
+        teller.offer(OfferType.TEN_PERCENT_DISCOUNT, toothbrush, 10.0);
 
         ShoppingCart cart = new ShoppingCart();
         cart.addItemQuantity(apples, 2.5);
 
         // ACT
-        Receipt receipt = teller.checksOutArticlesFrom(cart);
+        Receipt receipt = teller.receipt(cart);
 
         // ASSERT
-        assertEquals(4.975, receipt.getTotalPrice().doubleValue(), 0.01);
-        assertEquals(Collections.emptyList(), receipt.getDiscounts());
-        assertEquals(1, receipt.getItems().size());
-        ReceiptItem receiptItem = receipt.getItems().get(0);
+        assertEquals(4.975, receipt.totalPrice().doubleValue(), 0.01);
+        assertEquals(Collections.emptyList(), receipt.discounts());
+        assertEquals(1, receipt.items().size());
+        ReceiptItem receiptItem = receipt.items().get(0);
         assertEquals(apples, receiptItem.getProduct());
         assertEquals(1.99, receiptItem.getPrice().doubleValue());
         assertEquals(2.5 * 1.99, receiptItem.getTotalPrice().doubleValue());

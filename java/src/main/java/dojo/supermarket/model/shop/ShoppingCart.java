@@ -38,12 +38,12 @@ public class ShoppingCart {
         }
     }
 
-    void handleOffers(Receipt receipt, Map<Product, Offer> offers, ShopCatalog catalog) {
+    void applyOffers(Receipt receipt, Map<Product, Offer> offers, ShopCatalog catalog) {
         for (Product p : productQuantities().keySet()) {
             double quantity = productQuantities.get(p);
             if (offers.containsKey(p)) {
                 Offer offer = offers.get(p);
-                BigDecimal unitPrice = catalog.getUnitPrice(p);
+                BigDecimal unitPrice = catalog.priceOfProduct(p);
                 int quantityAsInt = (int) quantity;
                 Discount discount = null;
                 int x = 1;
@@ -78,8 +78,7 @@ public class ShoppingCart {
                     Money money = Money.of(CurrencyUnit.USD, discountTotal);
                     discount = new Discount(p, x + " for " + offer.getArgument(), money);
                 }
-                if (discount != null)
-                    receipt.addDiscount(discount);
+                if (discount != null) receipt.addDiscount(discount);
             }
         }
     }

@@ -10,11 +10,11 @@ public class ProductQuantity {
         this.quantity = weight;
     }
 
-    public Product getProduct() {
+    public Product product() {
         return product;
     }
 
-    public double getQuantity() {
+    public double quantity() {
         return quantity;
     }
 }

@@ -20,21 +20,21 @@ public class Teller {
         this.catalog = catalog;
     }
 
-    public void addSpecialOffer(OfferType offerType, Product product, double argument) {
+    public void offer(OfferType offerType, Product product, double argument) {
         offers.put(product, new Offer(offerType, product, argument));
     }
 
-    public Receipt checksOutArticlesFrom(ShoppingCart theCart) {
+    public Receipt receipt(ShoppingCart theCart) {
         Receipt receipt = new Receipt();
         List<ProductQuantity> productQuantities = theCart.getItems();
         for (ProductQuantity pq : productQuantities) {
-            Product p = pq.getProduct();
-            double quantity = pq.getQuantity();
-            BigDecimal unitPrice = catalog.getUnitPrice(p);
+            Product p = pq.product();
+            double quantity = pq.quantity();
+            BigDecimal unitPrice = catalog.priceOfProduct(p);
             BigDecimal price = unitPrice.multiply(BigDecimal.valueOf(quantity));
-            receipt.addProduct(p, quantity, unitPrice, price);
+            receipt.add(p, quantity, unitPrice, price);
         }
-        theCart.handleOffers(receipt, offers, catalog);
+        theCart.applyOffers(receipt, offers, catalog);
 
         return receipt;
     }
