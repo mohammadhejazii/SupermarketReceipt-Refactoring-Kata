@@ -5,6 +5,7 @@ import dojo.supermarket.model.product.ProductUnit;
 import dojo.supermarket.model.receipt.Receipt;
 import dojo.supermarket.model.receipt.ReceiptItem;
 
+import java.math.BigDecimal;
 import java.util.Locale;
 
 public class ReceiptPrinter {
@@ -49,7 +50,7 @@ public class ReceiptPrinter {
 
     private String presentDiscount(Discount discount) {
         String name = discount.getDescription() + "(" + discount.getProduct().getName() + ")";
-        String value = presentPrice(discount.getDiscountAmount());
+        String value = presentPrice(discount.getMoney().getAmount());
 
         return formatLineWithWhitespace(name, value);
     }
@@ -72,7 +73,7 @@ public class ReceiptPrinter {
         return line.toString();
     }
 
-    private static String presentPrice(double price) {
+    private static String presentPrice(BigDecimal price) {
         return String.format(Locale.UK, "%.2f", price);
     }
 

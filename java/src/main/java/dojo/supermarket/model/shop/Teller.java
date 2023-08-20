@@ -1,4 +1,4 @@
-package dojo.supermarket.model;
+package dojo.supermarket.model.shop;
 
 import dojo.supermarket.model.product.Product;
 import dojo.supermarket.model.product.ProductQuantity;
@@ -6,16 +6,17 @@ import dojo.supermarket.model.product.offer.Offer;
 import dojo.supermarket.model.product.offer.OfferType;
 import dojo.supermarket.model.receipt.Receipt;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Teller {
 
-    private final SupermarketCatalog catalog;
+    private final ShopCatalog catalog;
     private final Map<Product, Offer> offers = new HashMap<>();
 
-    public Teller(SupermarketCatalog catalog) {
+    public Teller(ShopCatalog catalog) {
         this.catalog = catalog;
     }
 
@@ -26,11 +27,11 @@ public class Teller {
     public Receipt checksOutArticlesFrom(ShoppingCart theCart) {
         Receipt receipt = new Receipt();
         List<ProductQuantity> productQuantities = theCart.getItems();
-        for (ProductQuantity pq: productQuantities) {
+        for (ProductQuantity pq : productQuantities) {
             Product p = pq.getProduct();
             double quantity = pq.getQuantity();
-            double unitPrice = catalog.getUnitPrice(p);
-            double price = quantity * unitPrice;
+            BigDecimal unitPrice = catalog.getUnitPrice(p);
+            BigDecimal price = unitPrice.multiply(BigDecimal.valueOf(quantity));
             receipt.addProduct(p, quantity, unitPrice, price);
         }
         theCart.handleOffers(receipt, offers, catalog);
