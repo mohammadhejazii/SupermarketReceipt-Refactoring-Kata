@@ -1,5 +1,10 @@
 package dojo.supermarket.model;
 
+import dojo.supermarket.model.product.Product;
+import dojo.supermarket.model.product.ProductQuantity;
+import dojo.supermarket.model.product.offer.OfferType;
+import dojo.supermarket.model.receipt.Receipt;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +18,7 @@ public class Teller {
         this.catalog = catalog;
     }
 
-    public void addSpecialOffer(SpecialOfferType offerType, Product product, double argument) {
+    public void addSpecialOffer(OfferType offerType, Product product, double argument) {
         offers.put(product, new Offer(offerType, product, argument));
     }
 

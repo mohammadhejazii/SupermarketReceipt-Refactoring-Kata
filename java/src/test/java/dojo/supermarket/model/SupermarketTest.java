@@ -1,7 +1,10 @@
 package dojo.supermarket.model;
 
-import dojo.supermarket.ReceiptPrinter;
-import org.approvaltests.Approvals;
+import dojo.supermarket.model.product.Product;
+import dojo.supermarket.model.product.ProductUnit;
+import dojo.supermarket.model.product.offer.OfferType;
+import dojo.supermarket.model.receipt.Receipt;
+import dojo.supermarket.model.receipt.ReceiptItem;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -21,7 +24,7 @@ public class SupermarketTest {
         catalog.addProduct(apples, 1.99);
 
         Teller teller = new Teller(catalog);
-        teller.addSpecialOffer(SpecialOfferType.TEN_PERCENT_DISCOUNT, toothbrush, 10.0);
+        teller.addSpecialOffer(OfferType.TEN_PERCENT_DISCOUNT, toothbrush, 10.0);
 
         ShoppingCart cart = new ShoppingCart();
         cart.addItemQuantity(apples, 2.5);

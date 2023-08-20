@@ -1,12 +1,15 @@
 package dojo.supermarket.model;
 
+import dojo.supermarket.model.product.Product;
+import dojo.supermarket.model.product.offer.OfferType;
+
 public class Offer {
 
-    SpecialOfferType offerType;
+    OfferType offerType;
     private final Product product;
     double argument;
 
-    public Offer(SpecialOfferType offerType, Product product, double argument) {
+    public Offer(OfferType offerType, Product product, double argument) {
         this.offerType = offerType;
         this.argument = argument;
         this.product = product;
