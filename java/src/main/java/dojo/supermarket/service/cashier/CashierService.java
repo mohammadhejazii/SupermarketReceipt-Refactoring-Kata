@@ -1,5 +1,6 @@
 package dojo.supermarket.service.cashier;
 
+import dojo.supermarket.model.discount.Discount;
 import dojo.supermarket.model.product.Product;
 import dojo.supermarket.model.product.ProductQuantity;
 import dojo.supermarket.model.product.offer.Offer;
@@ -26,9 +27,9 @@ public class CashierService {
         offers.put(product, new Offer(offerType, product, argument));
     }
 
-    public Receipt receipt(ShoppingCart theCart) {
+    public Receipt receipt(ShoppingCart shoppingCart) {
         Receipt receipt = new Receipt();
-        List<ProductQuantity> productQuantities = theCart.getItems();
+        List<ProductQuantity> productQuantities = shoppingCart.getItems();
         for (ProductQuantity pq : productQuantities) {
             Product p = pq.product();
             double quantity = pq.quantity();
@@ -36,8 +37,20 @@ public class CashierService {
             BigDecimal price = unitPrice.multiply(BigDecimal.valueOf(quantity));
             receipt.add(p, quantity, unitPrice, price);
         }
-        theCart.applyOffers(receipt, offers, catalog);
+        applyOffers(shoppingCart, receipt, offers, catalog);
 
         return receipt;
     }
+
+
+    public void applyOffers(ShoppingCart shoppingCart, Receipt receipt, Map<Product, Offer> offers, ShopCatalog catalog) {
+        for (Product product : shoppingCart.getProductQuantities().keySet()) {
+            if (offers.containsKey(product)) {
+                Offer offer = offers.get(product);
+                Discount discount = offer.getOfferType().calculator().applyOffer(product, catalog.priceOfProduct(product), shoppingCart.getProductQuantities().get(product), offer);
+                if (discount != null) receipt.addDiscount(discount);
+            }
+        }
+    }
+
 }

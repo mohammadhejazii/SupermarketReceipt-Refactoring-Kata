@@ -30,13 +30,5 @@ public class ShoppingCart {
         }
     }
 
-    public void applyOffers(Receipt receipt, Map<Product, Offer> offers, ShopCatalog catalog) {
-        for (Product product : productQuantities().keySet()) {
-            if (offers.containsKey(product)) {
-                Offer offer = offers.get(product);
-                Discount discount = offer.getOfferType().calculator().applyOffer(product, catalog.priceOfProduct(product), productQuantities.get(product), offer);
-                if (discount != null) receipt.addDiscount(discount);
-            }
-        }
-    }
+
 }
