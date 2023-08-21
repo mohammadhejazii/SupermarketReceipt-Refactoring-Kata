@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FakeCatalog implements ShopCatalog {
+public class MockCatalog implements ShopCatalog {
     private Map<String, Product> products = new HashMap<>();
     private Map<String, BigDecimal> prices = new HashMap<>();
 

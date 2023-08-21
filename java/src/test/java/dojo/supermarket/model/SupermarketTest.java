@@ -7,7 +7,7 @@ import dojo.supermarket.model.receipt.Receipt;
 import dojo.supermarket.model.receipt.ReceiptItem;
 import dojo.supermarket.model.shop.ShopCatalog;
 import dojo.supermarket.model.shop.ShoppingCart;
-import dojo.supermarket.model.shop.Teller;
+import dojo.supermarket.service.cashier.CashierService;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -21,20 +21,20 @@ public class SupermarketTest {
 
     @Test
     public void tenPercentDiscount() {
-        ShopCatalog catalog = new FakeCatalog();
+        ShopCatalog catalog = new MockCatalog();
         Product toothbrush = new Product("toothbrush", ProductUnit.EACH);
         catalog.add(toothbrush, BigDecimal.valueOf(0.99));
         Product apples = new Product("apples", ProductUnit.KILO);
         catalog.add(apples, BigDecimal.valueOf(1.99));
 
-        Teller teller = new Teller(catalog);
-        teller.offer(OfferType.TEN_PERCENT_DISCOUNT, toothbrush, 10.0);
+        CashierService cashier = new CashierService(catalog);
+        cashier.offer(OfferType.TEN_PERCENT_DISCOUNT, toothbrush, 10.0);
 
         ShoppingCart cart = new ShoppingCart();
         cart.addItemQuantity(apples, 2.5);
 
         // ACT
-        Receipt receipt = teller.receipt(cart);
+        Receipt receipt = cashier.receipt(cart);
 
         // ASSERT
         assertEquals(4.975, receipt.totalPrice().doubleValue(), 0.01);

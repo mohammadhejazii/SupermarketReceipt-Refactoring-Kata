@@ -1,22 +1,24 @@
-package dojo.supermarket.model.shop;
+package dojo.supermarket.service.cashier;
 
 import dojo.supermarket.model.product.Product;
 import dojo.supermarket.model.product.ProductQuantity;
 import dojo.supermarket.model.product.offer.Offer;
 import dojo.supermarket.model.product.offer.OfferType;
 import dojo.supermarket.model.receipt.Receipt;
+import dojo.supermarket.model.shop.ShopCatalog;
+import dojo.supermarket.model.shop.ShoppingCart;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Teller {
+public class CashierService {
 
     private final ShopCatalog catalog;
     private final Map<Product, Offer> offers = new HashMap<>();
 
-    public Teller(ShopCatalog catalog) {
+    public CashierService(ShopCatalog catalog) {
         this.catalog = catalog;
     }
 
