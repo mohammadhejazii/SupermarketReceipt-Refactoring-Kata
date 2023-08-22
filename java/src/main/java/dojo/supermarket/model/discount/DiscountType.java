@@ -5,5 +5,17 @@ package dojo.supermarket.model.discount;
  * @since 2023.08.22
  */
 public enum DiscountType {
-    AMOUNT, PERCENT
+    AMOUNT("$"),
+    PERCENT("%");
+
+    private final String value;
+
+
+    DiscountType(final String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

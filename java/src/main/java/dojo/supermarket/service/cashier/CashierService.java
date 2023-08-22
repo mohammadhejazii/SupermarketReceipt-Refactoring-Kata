@@ -43,8 +43,7 @@ public class CashierService {
             throw BaseException.of("already used overall discount on this receipt.");
         }
         Discount discount = DiscountService.instance().findByCode(code);
-        Instant now = Instant.now();
-        if (!discount.getAvailable().getFrom().isBefore(now) || !discount.getAvailable().getTo().isAfter(now)) {
+        if (!discount.getAvailable().getFrom().isBefore(Instant.now()) || !discount.getAvailable().getTo().isAfter(Instant.now())) {
             throw BaseException.of("this discount available time not in range from: %s , to: %s valid.", discount.getAvailable().getFrom().toString(), discount.getAvailable().getTo().toString());
         }
         if (discount.getUsage().equals(DiscountUsage.SPECIFIC_USER) && user == null) {

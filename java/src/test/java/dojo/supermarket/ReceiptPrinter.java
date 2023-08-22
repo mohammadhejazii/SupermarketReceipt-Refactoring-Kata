@@ -59,7 +59,7 @@ public class ReceiptPrinter {
 
     private String presentReceiptDiscount(Receipt receipt) {
         String discount = formatLineWithWhitespace("use discount with code:", receipt.getDiscount().getCode());
-        String name = receipt.getDiscountReceipt().getReceipt().totalPriceWithOfferApply() + " - " + receipt.getDiscountReceipt().getDiscount().getAmount() + " :";
+        String name = receipt.getDiscountReceipt().getReceipt().totalPriceWithOfferApply() + " - " + receipt.getDiscountReceipt().getDiscount().getAmount()  + receipt.getDiscount().getType().getValue()+ " :";
         BigDecimal subtract = receipt.getDiscountReceipt().getReceipt().totalPriceWithOfferApply().subtract(receipt.getDiscountReceipt().getDiscount().getAmount());
         String value = presentPrice(subtract);
         return discount + formatLineWithWhitespace(name, value);

@@ -96,7 +96,8 @@ public class SupermarketTest {
 
         ShoppingCart cart = new ShoppingCart();
         cart.addItemQuantity(apples, 2.5);
-        Range<Instant> availableDateTime = Range.of(Instant.now(), Instant.now().plus(4, ChronoUnit.DAYS));
+        Instant start = Instant.now().minus(1, ChronoUnit.DAYS);
+        Range<Instant> availableDateTime = Range.of(start, Instant.now().plus(4, ChronoUnit.DAYS));
 
         Discount promotionWithAmount = Discount.promotionWithAmount(availableDateTime, BigDecimal.valueOf(0.5), "P-0.5");
         Discount promotionWithPercentage = Discount.promotionWithPercentage(availableDateTime, 2.0, "P-2%");
@@ -122,16 +123,17 @@ public class SupermarketTest {
 
         ShoppingCart cart = new ShoppingCart();
         cart.addItemQuantity(apples, 2.5);
-        Range<Instant> availableDateTime = Range.of(Instant.now(), Instant.now().plus(4, ChronoUnit.DAYS));
+        Instant start = Instant.now().minus(1, ChronoUnit.DAYS);
+        Range<Instant> availableDateTime = Range.of(start, Instant.now().plus(4, ChronoUnit.DAYS));
 
-        Discount promotionWithAmount = Discount.userWithAmount(availableDateTime, BigDecimal.valueOf(1), "P-0.5", "user1");
-        Discount promotionWithPercentage = Discount.userWithPercentage(availableDateTime, 2.0, "P-2%", "user1");
+        Discount promotionWithAmount = Discount.userWithAmount(availableDateTime, BigDecimal.valueOf(1), "A-0.5", "user1");
+        Discount promotionWithPercentage = Discount.userWithPercentage(availableDateTime, 2.0, "A-2%", "user1");
         DiscountService.instance().save(promotionWithAmount);
         DiscountService.instance().save(promotionWithPercentage);
 
         // ACT
         Receipt receipt = cashier.receipt(cart);
-        receipt = cashier.discount(receipt, "P-0.5", "user1");
+        receipt = cashier.discount(receipt, "A-2%", "user1");
         ReceiptPrinter.print(receipt);
     }
 
