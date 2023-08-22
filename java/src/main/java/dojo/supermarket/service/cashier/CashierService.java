@@ -23,8 +23,8 @@ public class CashierService {
         this.catalog = catalog;
     }
 
-    public void offer(OfferType offerType, Product product, double argument) {
-        offers.put(product, new Offer(offerType, product, argument));
+    public void offer(OfferType offerType, Product product) {
+        offers.put(product, new Offer(offerType, product));
     }
 
     public Receipt receipt(ShoppingCart shoppingCart) {

@@ -25,41 +25,61 @@ public class BaseOfferCalculator implements OfferCalculator {
     private BigDecimal amount;
     private Double percentage;
     private Double minimum;
+    private Integer offerApplyOnQuantity;
 
 
     public static BaseOfferCalculator amountOffer(final Double minimumQuantity,
-                                                  final BigDecimal amount) {
+                                                  final BigDecimal amount,
+                                                  final Integer offerApplyOnQuantity) {
         return BaseOfferCalculator.builder()
                 .minimum(minimumQuantity)
                 .amount(amount)
+                .offerApplyOnQuantity(offerApplyOnQuantity)
                 .build();
     }
 
 
     public static BaseOfferCalculator percentageOffer(final Double minimumQuantity,
-                                                      final Double percentage) {
+                                                      final Double percentage,
+                                                      final Integer offerApplyOnQuantity) {
         return BaseOfferCalculator.builder()
                 .minimum(minimumQuantity)
                 .percentage(percentage)
+                .offerApplyOnQuantity(offerApplyOnQuantity)
                 .build();
     }
 
 
     @Override
-    public Discount applyOffer(final Product product, final BigDecimal unitPrice, final Double quantity, final Offer offer) {
+    public Discount applyOffer(final Product product,
+                               final BigDecimal unitPrice,
+                               final Double quantity,
+                               final Offer offer) {
         Discount discount = null;
         int quantityAsInt = quantity.intValue();
         int numberOfXs = quantityAsInt / percentage().intValue();
         if (isMinimumQuantityPassed(quantity)) {
             if (percentage != null) {
-                double total = offer.getArgument() * (quantityAsInt / percentage()) + quantityAsInt % percentage() * unitPrice.doubleValue();
-                BigDecimal discountN = unitPrice.multiply(BigDecimal.valueOf(quantity)).min(BigDecimal.valueOf(total));
-                Money money = Money.of(CurrencyUnit.USD, discountN.doubleValue(), RoundingMode.FLOOR);
-                discount = new Discount(product, percentage() + " for " + offer.getArgument(), money);
+                if (offerApplyOnQuantity == 100) {
+                    BigDecimal totalPriceBeforeApplyOffer = unitPrice.multiply(BigDecimal.valueOf(quantity));
+                    BigDecimal discountAmount = totalPriceBeforeApplyOffer.multiply(BigDecimal.valueOf(percentage())).divide(BigDecimal.valueOf(100));
+                    Money totalMoney = Money.of(CurrencyUnit.EUR, totalPriceBeforeApplyOffer, RoundingMode.FLOOR);
+                    Money discountMoney = Money.of(CurrencyUnit.EUR, discountAmount, RoundingMode.FLOOR);
+                    discount = new Discount(String.format("%.2f%s on total", percentage(), "%"), totalMoney, discountMoney, product);
+                } else {
+                    double candidateQuantityWithOutOffer = quantity - offerApplyOnQuantity;
+                    BigDecimal withOutOfferPrice = unitPrice.multiply(BigDecimal.valueOf(candidateQuantityWithOutOffer));
+                    BigDecimal withOfferPrice = unitPrice.multiply(BigDecimal.valueOf(offerApplyOnQuantity));
+                    BigDecimal discountAmount = withOfferPrice.multiply(BigDecimal.valueOf(percentage())).divide(BigDecimal.valueOf(100));
+                    Money totalMoney = Money.of(CurrencyUnit.EUR, withOutOfferPrice.add(discountAmount), RoundingMode.FLOOR);
+                    Money discountMoney = Money.of(CurrencyUnit.EUR, discountAmount, RoundingMode.FLOOR);
+                    discount = new Discount(String.format("%.2f%s on %s quantity", percentage(), "%", offerApplyOnQuantity), totalMoney, discountMoney, product);
+                }
+                return discount;
             } else if (amount != null) {
-                double discountTotal = unitPrice.multiply(BigDecimal.valueOf(quantity)).doubleValue() - (offer.getArgument() * numberOfXs + quantityAsInt % percentage() * unitPrice.doubleValue());
+                double discountTotal = unitPrice.multiply(BigDecimal.valueOf(quantity)).doubleValue() - (numberOfXs + quantityAsInt % percentage() * unitPrice.doubleValue());
                 Money money = Money.of(CurrencyUnit.USD, discountTotal, RoundingMode.FLOOR);
-                discount = new Discount(product, percentage() + " for " + offer.getArgument(), money);
+//                discount = new Discount(product, percentage() + " for " + discountTotal, money);
             }
         }
         return discount;

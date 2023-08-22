@@ -20,20 +20,21 @@ public class ReceiptPrinter {
         this.columns = columns;
     }
 
-    public String printReceipt(Receipt receipt) {
+    public static void print(Receipt receipt) {
+        ReceiptPrinter printer = new ReceiptPrinter();
         StringBuilder result = new StringBuilder();
         for (ReceiptItem item : receipt.items()) {
-            String receiptItem = presentReceiptItem(item);
+            String receiptItem = printer.presentReceiptItem(item);
             result.append(receiptItem);
         }
         for (Discount discount : receipt.discounts()) {
-            String discountPresentation = presentDiscount(discount);
+            String discountPresentation = printer.presentDiscount(discount);
             result.append(discountPresentation);
         }
 
         result.append("\n");
-        result.append(presentTotal(receipt));
-        return result.toString();
+        result.append(printer.presentTotal(receipt));
+        System.out.println(result);
     }
 
     private String presentReceiptItem(ReceiptItem item) {
@@ -50,14 +51,14 @@ public class ReceiptPrinter {
 
     private String presentDiscount(Discount discount) {
         String name = discount.getDescription() + "(" + discount.getProduct().name() + ")";
-        String value = presentPrice(discount.getMoney().getAmount());
+        String value = presentPrice(discount.getDiscount().getAmount());
 
         return formatLineWithWhitespace(name, value);
     }
 
     private String presentTotal(Receipt receipt) {
         String name = "Total: ";
-        String value = presentPrice(receipt.totalPrice());
+        String value = presentPrice(receipt.totalPriceWithOfferApply());
         return formatLineWithWhitespace(name, value);
     }
 
@@ -79,7 +80,7 @@ public class ReceiptPrinter {
 
     private static String presentQuantity(ReceiptItem item) {
         return ProductUnit.EACH.equals(item.getProduct().unit())
-                ? String.format("%d", (int)item.getQuantity())
+                ? String.format("%d", (int) item.getQuantity())
                 : String.format(Locale.UK, "%.3f", item.getQuantity());
     }
 }

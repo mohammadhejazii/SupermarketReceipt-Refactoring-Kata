@@ -13,13 +13,23 @@ public class Receipt {
     private final List<ReceiptItem> items = new ArrayList<>();
     private final List<Discount> discounts = new ArrayList<>();
 
-    public BigDecimal totalPrice() {
+
+    public BigDecimal totalPriceWithOutOffer() {
+        BigDecimal total = BigDecimal.ZERO;
+        for (ReceiptItem item : items) {
+            total = total.add(item.getTotalPrice());
+        }
+
+        return total;
+    }
+
+    public BigDecimal totalPriceWithOfferApply() {
         BigDecimal total = BigDecimal.ZERO;
         for (ReceiptItem item : items) {
             total = total.add(item.getTotalPrice());
         }
         for (Discount discount : discounts) {
-            total = total.add(discount.getMoney().getAmount());
+            total = total.subtract(discount.getDiscount().getAmount());
         }
         return total;
     }

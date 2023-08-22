@@ -1,5 +1,6 @@
 package dojo.supermarket.model;
 
+import dojo.supermarket.ReceiptPrinter;
 import dojo.supermarket.model.product.Product;
 import dojo.supermarket.model.product.ProductUnit;
 import dojo.supermarket.model.product.offer.OfferType;
@@ -17,10 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SupermarketTest {
 
-    // Todo: test all kinds of discounts are applied properly
 
     @Test
-    public void tenPercentDiscount() {
+    public void tenPercentOfTotalDiscount() {
         ShopCatalog catalog = new MockCatalog();
         Product toothbrush = new Product("toothbrush", ProductUnit.EACH);
         catalog.add(toothbrush, BigDecimal.valueOf(0.99));
@@ -28,17 +28,17 @@ public class SupermarketTest {
         catalog.add(apples, BigDecimal.valueOf(1.99));
 
         CashierService cashier = new CashierService(catalog);
-        cashier.offer(OfferType.TEN_PERCENT_DISCOUNT, toothbrush, 10.0);
+        cashier.offer(OfferType.TEN_PERCENT_DISCOUNT, apples);
 
         ShoppingCart cart = new ShoppingCart();
         cart.addItemQuantity(apples, 2.5);
 
         // ACT
         Receipt receipt = cashier.receipt(cart);
+        ReceiptPrinter.print(receipt);
 
         // ASSERT
-        assertEquals(4.975, receipt.totalPrice().doubleValue(), 0.01);
-        assertEquals(Collections.emptyList(), receipt.discounts());
+        assertEquals(4.975, receipt.totalPriceWithOutOffer().doubleValue(), 0.01);
         assertEquals(1, receipt.items().size());
         ReceiptItem receiptItem = receipt.items().get(0);
         assertEquals(apples, receiptItem.getProduct());
@@ -48,5 +48,34 @@ public class SupermarketTest {
 
     }
 
+
+    @Test
+    public void twoPercentOnTotalAmountDiscount() {
+        ShopCatalog catalog = new MockCatalog();
+        Product toothbrush = new Product("toothbrush", ProductUnit.EACH);
+        catalog.add(toothbrush, BigDecimal.valueOf(0.99));
+        Product apples = new Product("apples", ProductUnit.KILO);
+        catalog.add(apples, BigDecimal.valueOf(1.99));
+        CashierService cashier = new CashierService(catalog);
+        cashier.offer(OfferType.TWO_PERCENT_ON_TOTAL_AMOUNT, apples);
+        cashier.offer(OfferType.FIVE_PERCENT_ON_TOTAL_AMOUNT, toothbrush);
+
+        ShoppingCart cart = new ShoppingCart();
+        cart.addItemQuantity(apples, 2.5);
+        cart.addItemQuantity(toothbrush, 5);
+
+        // ACT
+        Receipt receipt = cashier.receipt(cart);
+        ReceiptPrinter.print(receipt);
+        // ASSERT
+        assertEquals(9.925, receipt.totalPriceWithOutOffer().doubleValue(), 0.01);
+        assertEquals(2, receipt.items().size());
+        ReceiptItem receiptItem = receipt.items().get(0);
+        assertEquals(apples, receiptItem.getProduct());
+        assertEquals(1.99, receiptItem.getPrice().doubleValue());
+        assertEquals(2.5 * 1.99, receiptItem.getTotalPrice().doubleValue());
+        assertEquals(2.5, receiptItem.getQuantity());
+
+    }
 
 }
