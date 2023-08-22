@@ -1,6 +1,6 @@
 package dojo.supermarket.service.product.offer;
 
-import dojo.supermarket.model.discount.Discount;
+import dojo.supermarket.model.discount.DiscountReceipt;
 import dojo.supermarket.model.product.Product;
 import dojo.supermarket.model.product.offer.Offer;
 import dojo.supermarket.model.product.offer.OfferCalculator;
@@ -51,11 +51,11 @@ public class BaseOfferCalculator implements OfferCalculator {
 
 
     @Override
-    public Discount applyOffer(final Product product,
-                               final BigDecimal unitPrice,
-                               final Double quantity,
-                               final Offer offer) {
-        Discount discount = null;
+    public DiscountReceipt applyOffer(final Product product,
+                                      final BigDecimal unitPrice,
+                                      final Double quantity,
+                                      final Offer offer) {
+        DiscountReceipt discountReceipt = null;
         int quantityAsInt = quantity.intValue();
         int numberOfXs = quantityAsInt / percentage().intValue();
         if (isMinimumQuantityPassed(quantity)) {
@@ -65,7 +65,7 @@ public class BaseOfferCalculator implements OfferCalculator {
                     BigDecimal discountAmount = totalPriceBeforeApplyOffer.multiply(BigDecimal.valueOf(percentage())).divide(BigDecimal.valueOf(100));
                     Money totalMoney = Money.of(CurrencyUnit.EUR, totalPriceBeforeApplyOffer, RoundingMode.FLOOR);
                     Money discountMoney = Money.of(CurrencyUnit.EUR, discountAmount, RoundingMode.FLOOR);
-                    discount = new Discount(String.format("%.2f%s on total", percentage(), "%"), totalMoney, discountMoney, product);
+                    discountReceipt = DiscountReceipt.product(String.format("%.2f%s on total", percentage(), "%"), totalMoney, discountMoney, product);
                 } else {
                     double candidateQuantityWithOutOffer = quantity - offerApplyOnQuantity;
                     BigDecimal withOutOfferPrice = unitPrice.multiply(BigDecimal.valueOf(candidateQuantityWithOutOffer));
@@ -73,16 +73,16 @@ public class BaseOfferCalculator implements OfferCalculator {
                     BigDecimal discountAmount = withOfferPrice.multiply(BigDecimal.valueOf(percentage())).divide(BigDecimal.valueOf(100));
                     Money totalMoney = Money.of(CurrencyUnit.EUR, withOutOfferPrice.add(discountAmount), RoundingMode.FLOOR);
                     Money discountMoney = Money.of(CurrencyUnit.EUR, discountAmount, RoundingMode.FLOOR);
-                    discount = new Discount(String.format("%.2f%s on %s quantity", percentage(), "%", offerApplyOnQuantity), totalMoney, discountMoney, product);
+                    discountReceipt = DiscountReceipt.product(String.format("%.2f%s on %s quantity", percentage(), "%", offerApplyOnQuantity), totalMoney, discountMoney, product);
                 }
-                return discount;
+                return discountReceipt;
             } else if (amount != null) {
                 double discountTotal = unitPrice.multiply(BigDecimal.valueOf(quantity)).doubleValue() - (numberOfXs + quantityAsInt % percentage() * unitPrice.doubleValue());
                 Money money = Money.of(CurrencyUnit.USD, discountTotal, RoundingMode.FLOOR);
 //                discount = new Discount(product, percentage() + " for " + discountTotal, money);
             }
         }
-        return discount;
+        return discountReceipt;
     }
 
     @Override

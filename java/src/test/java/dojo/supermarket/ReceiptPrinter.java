@@ -1,6 +1,6 @@
 package dojo.supermarket;
 
-import dojo.supermarket.model.discount.Discount;
+import dojo.supermarket.model.discount.DiscountReceipt;
 import dojo.supermarket.model.product.ProductUnit;
 import dojo.supermarket.model.receipt.Receipt;
 import dojo.supermarket.model.receipt.ReceiptItem;
@@ -23,17 +23,24 @@ public class ReceiptPrinter {
     public static void print(Receipt receipt) {
         ReceiptPrinter printer = new ReceiptPrinter();
         StringBuilder result = new StringBuilder();
+        result.append("========================================\n");
         for (ReceiptItem item : receipt.items()) {
             String receiptItem = printer.presentReceiptItem(item);
             result.append(receiptItem);
         }
-        for (Discount discount : receipt.discounts()) {
-            String discountPresentation = printer.presentDiscount(discount);
+        for (DiscountReceipt discountReceipt : receipt.offers()) {
+            String discountPresentation = printer.presentProductDiscount(discountReceipt);
             result.append(discountPresentation);
         }
 
+        if (receipt.getDiscountReceipt() != null) {
+            result.append("------\n");
+            result.append(printer.presentReceiptDiscount(receipt));
+        }
         result.append("\n");
         result.append(printer.presentTotal(receipt));
+        result.append("========================================\n");
+
         System.out.println(result);
     }
 
@@ -49,16 +56,24 @@ public class ReceiptPrinter {
         return line;
     }
 
-    private String presentDiscount(Discount discount) {
-        String name = discount.getDescription() + "(" + discount.getProduct().name() + ")";
-        String value = presentPrice(discount.getDiscount().getAmount());
 
+    private String presentReceiptDiscount(Receipt receipt) {
+        String discount = formatLineWithWhitespace("use discount with code:", receipt.getDiscount().getCode());
+        String name = receipt.getDiscountReceipt().getReceipt().totalPriceWithOfferApply() + " - " + receipt.getDiscountReceipt().getDiscount().getAmount() + " :";
+        BigDecimal subtract = receipt.getDiscountReceipt().getReceipt().totalPriceWithOfferApply().subtract(receipt.getDiscountReceipt().getDiscount().getAmount());
+        String value = presentPrice(subtract);
+        return discount + formatLineWithWhitespace(name, value);
+    }
+
+    private String presentProductDiscount(DiscountReceipt discountReceipt) {
+        String name = discountReceipt.getDescription() + "(" + discountReceipt.getProduct().name() + ")";
+        String value = presentPrice(discountReceipt.getDiscount().getAmount());
         return formatLineWithWhitespace(name, value);
     }
 
     private String presentTotal(Receipt receipt) {
         String name = "Total: ";
-        String value = presentPrice(receipt.totalPriceWithOfferApply());
+        String value = presentPrice(receipt.totalPriceWithOfferAndDiscountApply());
         return formatLineWithWhitespace(name, value);
     }
 

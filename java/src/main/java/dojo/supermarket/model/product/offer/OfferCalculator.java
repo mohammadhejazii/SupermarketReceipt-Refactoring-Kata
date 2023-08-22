@@ -1,6 +1,6 @@
 package dojo.supermarket.model.product.offer;
 
-import dojo.supermarket.model.discount.Discount;
+import dojo.supermarket.model.discount.DiscountReceipt;
 import dojo.supermarket.model.product.Product;
 
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  */
 public interface OfferCalculator {
 
-    Discount applyOffer(Product product, BigDecimal unitPrice, Double quantity, Offer offer);
+    DiscountReceipt applyOffer(Product product, BigDecimal unitPrice, Double quantity, Offer offer);
 
     Double percentage();
 
