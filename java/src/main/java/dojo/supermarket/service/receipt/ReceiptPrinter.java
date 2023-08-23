@@ -1,4 +1,4 @@
-package dojo.supermarket;
+package dojo.supermarket.service.receipt;
 
 import dojo.supermarket.model.discount.DiscountReceipt;
 import dojo.supermarket.model.product.ProductUnit;

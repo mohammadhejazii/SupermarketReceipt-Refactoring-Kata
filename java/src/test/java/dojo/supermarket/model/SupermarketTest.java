@@ -1,6 +1,6 @@
 package dojo.supermarket.model;
 
-import dojo.supermarket.ReceiptPrinter;
+import dojo.supermarket.service.receipt.ReceiptPrinter;
 import dojo.supermarket.model.base.Range;
 import dojo.supermarket.model.discount.Discount;
 import dojo.supermarket.model.product.Product;
