@@ -25,6 +25,7 @@ public class Discount implements Serializable {
     private BigDecimal value;
     private String code;
     private String user;
+    private DiscountState state;
     private BigDecimal minimumAffectedAmountOnPurchase;
     private BigDecimal maximumAffectedAmountOnPurchase;
 
@@ -37,6 +38,7 @@ public class Discount implements Serializable {
                 .value(amount)
                 .usage(DiscountUsage.PROMOTION)
                 .code(code)
+                .state(DiscountState.APPROVED)
                 .build();
     }
 
@@ -49,6 +51,7 @@ public class Discount implements Serializable {
                 .value(BigDecimal.valueOf(percent))
                 .usage(DiscountUsage.PROMOTION)
                 .code(code)
+                .state(DiscountState.APPROVED)
                 .build();
     }
 
@@ -60,6 +63,7 @@ public class Discount implements Serializable {
                 .usage(DiscountUsage.SPECIFIC_USER)
                 .user(user)
                 .code(code)
+                .state(DiscountState.APPROVED)
                 .build();
     }
 
@@ -71,6 +75,7 @@ public class Discount implements Serializable {
                 .usage(DiscountUsage.SPECIFIC_USER)
                 .user(user)
                 .code(code)
+                .state(DiscountState.APPROVED)
                 .build();
     }
 

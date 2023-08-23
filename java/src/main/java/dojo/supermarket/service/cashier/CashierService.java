@@ -3,6 +3,7 @@ package dojo.supermarket.service.cashier;
 import dojo.supermarket.model.base.BaseException;
 import dojo.supermarket.model.discount.Discount;
 import dojo.supermarket.model.discount.DiscountReceipt;
+import dojo.supermarket.model.discount.DiscountState;
 import dojo.supermarket.model.discount.DiscountUsage;
 import dojo.supermarket.model.product.Product;
 import dojo.supermarket.model.product.ProductQuantity;
@@ -51,6 +52,12 @@ public class CashierService {
         }
         if (discount.getUsage().equals(DiscountUsage.SPECIFIC_USER) && !user.equals(discount.getUser())) {
             throw BaseException.of("discount not match with candidate user: %s.", user);
+        }
+        if (discount.getState() == DiscountState.EXPIRED) {
+            throw BaseException.of("discount with code %s already expired.", code);
+        }
+        if (discount.getState() != DiscountState.APPROVED) {
+            throw BaseException.of("discount with code %s is not active.", code);
         }
 
         BigDecimal totalPrice = receipt.totalPriceWithOfferApply();
