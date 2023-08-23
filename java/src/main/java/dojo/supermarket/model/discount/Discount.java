@@ -6,7 +6,6 @@ import lombok.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.UUID;
 
 /**
  * @author mohammad hejazi - smohammadhejazii@gmail.com
@@ -26,6 +25,8 @@ public class Discount implements Serializable {
     private BigDecimal value;
     private String code;
     private String user;
+    private BigDecimal minimumAffectedAmountOnPurchase;
+    private BigDecimal maximumAffectedAmountOnPurchase;
 
     public static Discount promotionWithAmount(final Range<Instant> available,
                                                final BigDecimal amount,
@@ -71,6 +72,16 @@ public class Discount implements Serializable {
                 .user(user)
                 .code(code)
                 .build();
+    }
+
+    public Discount minimum(final BigDecimal amount) {
+        this.minimumAffectedAmountOnPurchase = amount;
+        return this;
+    }
+
+    public Discount maximum(final BigDecimal amount) {
+        this.maximumAffectedAmountOnPurchase = amount;
+        return this;
     }
 
 

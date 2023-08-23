@@ -53,17 +53,31 @@ public class CashierService {
             throw BaseException.of("discount not match with candidate user: %s.", user);
         }
 
+        BigDecimal totalPrice = receipt.totalPriceWithOfferApply();
+        if (totalPrice.compareTo(discount.getMinimumAffectedAmountOnPurchase()) < 0) {
+            throw BaseException.of("minimum amount is %s per purchase to use discount with code %s, total receipt is: %s", discount.getMinimumAffectedAmountOnPurchase().toString(), discount.getCode(), totalPrice.toString());
+        }
+
+
         DiscountService.instance().verify(discount, user);
         DiscountService.instance().used(discount, receipt);
-        BigDecimal totalPrice = receipt.totalPriceWithOfferApply();
+
+
         Money total = Money.of(CurrencyUnit.EUR, totalPrice, RoundingMode.FLOOR);
         Money discountMoney;
 
 
         switch (discount.getType()) {
             case AMOUNT -> discountMoney = Money.of(CurrencyUnit.EUR, discount.getValue(), RoundingMode.FLOOR);
-            case PERCENT ->
-                    discountMoney = Money.of(CurrencyUnit.EUR, totalPrice.multiply(discount.getValue()).divide(BigDecimal.valueOf(100)), RoundingMode.FLOOR);
+            case PERCENT -> {
+                if (totalPrice.compareTo(discount.getMaximumAffectedAmountOnPurchase()) > 0) {
+                    BigDecimal discountAmount = discount.getMaximumAffectedAmountOnPurchase().multiply(discount.getValue()).divide(BigDecimal.valueOf(100));
+                    discountMoney = Money.of(CurrencyUnit.EUR, discountAmount, RoundingMode.FLOOR);
+                } else {
+                    BigDecimal discountAmount = totalPrice.multiply(discount.getValue()).divide(BigDecimal.valueOf(100));
+                    discountMoney = Money.of(CurrencyUnit.EUR, discountAmount, RoundingMode.FLOOR);
+                }
+            }
             default -> throw BaseException.of("discount type not in range");
         }
 
