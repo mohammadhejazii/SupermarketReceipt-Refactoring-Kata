@@ -11,7 +11,7 @@ import dojo.supermarket.model.receipt.ReceiptItem;
 import dojo.supermarket.model.shop.ShopCatalog;
 import dojo.supermarket.model.shop.ShoppingCart;
 import dojo.supermarket.service.cashier.CashierService;
-import dojo.supermarket.service.discount.DiscountService;
+import dojo.supermarket.service.discount.coupon.DiscountCouponService;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -105,8 +105,8 @@ public class SupermarketTest {
         DiscountCoupon promotionWithPercentage = DiscountCoupon.promotionWithPercentage(availableDateTime, 20.0, "P-20%")
                 .minimum(BigDecimal.valueOf(3))
                 .maximum(BigDecimal.valueOf(6));
-        DiscountService.instance().save(promotionWithAmount);
-        DiscountService.instance().save(promotionWithPercentage);
+        DiscountCouponService.instance().save(promotionWithAmount);
+        DiscountCouponService.instance().save(promotionWithPercentage);
 
         // ACT
         Receipt receipt = cashier.receipt(cart);
@@ -136,8 +136,8 @@ public class SupermarketTest {
         DiscountCoupon promotionWithPercentage = DiscountCoupon.userWithPercentage(availableDateTime, 20.0, "A-20%", "user1")
                 .minimum(BigDecimal.valueOf(3))
                 .maximum(BigDecimal.valueOf(4));
-        DiscountService.instance().save(promotionWithAmount);
-        DiscountService.instance().save(promotionWithPercentage);
+        DiscountCouponService.instance().save(promotionWithAmount);
+        DiscountCouponService.instance().save(promotionWithPercentage);
 
         // ACT
         Receipt receipt = cashier.receipt(cart);

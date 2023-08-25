@@ -1,4 +1,4 @@
-package dojo.supermarket.service.discount;
+package dojo.supermarket.service.discount.coupon;
 
 import dojo.supermarket.model.base.BaseException;
 import dojo.supermarket.model.discount.coupon.DiscountCoupon;
@@ -13,15 +13,15 @@ import java.time.Instant;
  * @author mohammad hejazi - smohammadhejazii@gmail.com
  * @since 2023.08.22
  */
-public class DiscountService {
-    private static DiscountService instance;
+public class DiscountCouponService {
+    private static DiscountCouponService instance;
 
-    private DiscountService() {
+    private DiscountCouponService() {
     }
 
-    public static DiscountService instance() {
+    public static DiscountCouponService instance() {
         if (instance == null) {
-            instance = new DiscountService();
+            instance = new DiscountCouponService();
         }
         return instance;
     }

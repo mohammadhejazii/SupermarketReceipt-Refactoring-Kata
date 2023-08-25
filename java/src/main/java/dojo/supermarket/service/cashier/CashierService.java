@@ -12,7 +12,7 @@ import dojo.supermarket.model.product.offer.OfferType;
 import dojo.supermarket.model.receipt.Receipt;
 import dojo.supermarket.model.shop.ShopCatalog;
 import dojo.supermarket.model.shop.ShoppingCart;
-import dojo.supermarket.service.discount.DiscountService;
+import dojo.supermarket.service.discount.coupon.DiscountCouponService;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 
@@ -43,7 +43,7 @@ public class CashierService {
         if (receipt.getDiscountReceipt() != null) {
             throw BaseException.of("already used overall discount on this receipt.");
         }
-        DiscountCoupon discountCoupon = DiscountService.instance().findByCode(code);
+        DiscountCoupon discountCoupon = DiscountCouponService.instance().findByCode(code);
         if (!discountCoupon.getAvailable().getFrom().isBefore(Instant.now()) || !discountCoupon.getAvailable().getTo().isAfter(Instant.now())) {
             throw BaseException.of("this discount available time not in range from: %s , to: %s valid.", discountCoupon.getAvailable().getFrom().toString(), discountCoupon.getAvailable().getTo().toString());
         }
@@ -66,8 +66,8 @@ public class CashierService {
         }
 
 
-        DiscountService.instance().verify(discountCoupon, user);
-        DiscountService.instance().used(discountCoupon, receipt);
+        DiscountCouponService.instance().verify(discountCoupon, user);
+        DiscountCouponService.instance().used(discountCoupon, receipt);
 
 
         Money total = Money.of(CurrencyUnit.EUR, totalPrice, RoundingMode.FLOOR);
