@@ -3,8 +3,8 @@ package dojo.supermarket.service.discount;
 import dojo.supermarket.model.base.BaseException;
 import dojo.supermarket.model.discount.coupon.DiscountCoupon;
 import dojo.supermarket.model.discount.coupon.DiscountCouponRepository;
-import dojo.supermarket.model.discount.applied.AppliedDiscount;
-import dojo.supermarket.model.discount.applied.AppliedDiscountRepository;
+import dojo.supermarket.model.discount.coupon.applied.AppliedDiscountCoupon;
+import dojo.supermarket.model.discount.coupon.applied.AppliedDiscountCouponRepository;
 import dojo.supermarket.model.receipt.Receipt;
 
 import java.time.Instant;
@@ -37,20 +37,20 @@ public class DiscountService {
 
 
     public void verify(final DiscountCoupon discountCoupon, final String user) {
-        AppliedDiscountRepository.instance().findByCodeAndUser(discountCoupon.getCode(), user).ifPresent(appliedDiscount -> {
+        AppliedDiscountCouponRepository.instance().findByCodeAndUser(discountCoupon.getCode(), user).ifPresent(appliedDiscountCoupon -> {
             throw BaseException.of("discount with code: %s already used by user: %s", discountCoupon.getCode(), user);
         });
     }
 
     public void used(final DiscountCoupon discountCoupon,
                      final Receipt receipt) {
-        AppliedDiscount appliedDiscount = AppliedDiscount.builder()
+        AppliedDiscountCoupon appliedDiscountCoupon = AppliedDiscountCoupon.builder()
                 .user(discountCoupon.getUser())
                 .receipt(receipt)
                 .used(true)
                 .usedDateTime(Instant.now())
                 .coupon(discountCoupon)
                 .build();
-        AppliedDiscountRepository.instance().save(appliedDiscount);
+        AppliedDiscountCouponRepository.instance().save(appliedDiscountCoupon);
     }
 }

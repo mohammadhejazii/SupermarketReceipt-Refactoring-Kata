@@ -1,4 +1,4 @@
-package dojo.supermarket.model.discount.applied;
+package dojo.supermarket.model.discount.coupon.applied;
 
 import dojo.supermarket.model.discount.coupon.DiscountCoupon;
 import dojo.supermarket.model.receipt.Receipt;
@@ -16,7 +16,7 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppliedDiscount implements Serializable {
+public class AppliedDiscountCoupon implements Serializable {
 
     private Receipt receipt;
     private DiscountCoupon coupon;
