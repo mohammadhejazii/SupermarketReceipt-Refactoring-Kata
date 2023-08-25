@@ -1,9 +1,9 @@
-package dojo.supermarket.model.discount;
+package dojo.supermarket.model.discount.coupon;
 
 /**
  * @author mohammad hejazi - smohammadhejazii@gmail.com
  * @since 2023.08.22
  */
-public enum DiscountUsage {
+public enum DiscountCouponUsage {
     PROMOTION, SPECIFIC_USER
 }

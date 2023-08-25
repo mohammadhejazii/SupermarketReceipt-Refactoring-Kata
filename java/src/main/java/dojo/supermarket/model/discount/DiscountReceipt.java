@@ -15,8 +15,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public final class DiscountReceipt implements Serializable {
     private String description;
-    private Money total;
-    private Money discount;
+    private Money totalPrice;
+    private Money discountPrice;
     private Product product;
     private Receipt receipt;
 
@@ -26,8 +26,8 @@ public final class DiscountReceipt implements Serializable {
                                           final Product product) {
         return DiscountReceipt.builder()
                 .description(description)
-                .total(total)
-                .discount(discount)
+                .totalPrice(total)
+                .discountPrice(discount)
                 .product(product)
                 .build();
     }
@@ -38,8 +38,8 @@ public final class DiscountReceipt implements Serializable {
                                           final Receipt receipt) {
         return DiscountReceipt.builder()
                 .description(description)
-                .total(total)
-                .discount(discount)
+                .totalPrice(total)
+                .discountPrice(discount)
                 .receipt(receipt)
                 .build();
     }

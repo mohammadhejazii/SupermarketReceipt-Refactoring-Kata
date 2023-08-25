@@ -2,7 +2,7 @@ package dojo.supermarket.model;
 
 import dojo.supermarket.service.receipt.ReceiptPrinter;
 import dojo.supermarket.model.base.Range;
-import dojo.supermarket.model.discount.Discount;
+import dojo.supermarket.model.discount.coupon.DiscountCoupon;
 import dojo.supermarket.model.product.Product;
 import dojo.supermarket.model.product.ProductUnit;
 import dojo.supermarket.model.product.offer.OfferType;
@@ -99,10 +99,10 @@ public class SupermarketTest {
         Instant start = Instant.now().minus(1, ChronoUnit.DAYS);
         Range<Instant> availableDateTime = Range.of(start, Instant.now().plus(4, ChronoUnit.DAYS));
 
-        Discount promotionWithAmount = Discount.promotionWithAmount(availableDateTime, BigDecimal.valueOf(0.5), "P-0.5")
+        DiscountCoupon promotionWithAmount = DiscountCoupon.promotionWithAmount(availableDateTime, BigDecimal.valueOf(0.5), "P-0.5")
                 .minimum(BigDecimal.valueOf(3))
                 .maximum(BigDecimal.valueOf(4));
-        Discount promotionWithPercentage = Discount.promotionWithPercentage(availableDateTime, 20.0, "P-20%")
+        DiscountCoupon promotionWithPercentage = DiscountCoupon.promotionWithPercentage(availableDateTime, 20.0, "P-20%")
                 .minimum(BigDecimal.valueOf(3))
                 .maximum(BigDecimal.valueOf(6));
         DiscountService.instance().save(promotionWithAmount);
@@ -110,7 +110,7 @@ public class SupermarketTest {
 
         // ACT
         Receipt receipt = cashier.receipt(cart);
-        receipt = cashier.discount(receipt, "P-20%", "user1");
+        receipt = cashier.coupon(receipt, "P-20%", "user1");
         ReceiptPrinter.print(receipt);
     }
 
@@ -130,10 +130,10 @@ public class SupermarketTest {
         Instant start = Instant.now().minus(1, ChronoUnit.DAYS);
         Range<Instant> availableDateTime = Range.of(start, Instant.now().plus(4, ChronoUnit.DAYS));
 
-        Discount promotionWithAmount = Discount.userWithAmount(availableDateTime, BigDecimal.valueOf(1), "A-0.5", "user1")
+        DiscountCoupon promotionWithAmount = DiscountCoupon.userWithAmount(availableDateTime, BigDecimal.valueOf(1), "A-0.5", "user1")
                 .minimum(BigDecimal.valueOf(3))
                 .maximum(BigDecimal.valueOf(4));
-        Discount promotionWithPercentage = Discount.userWithPercentage(availableDateTime, 20.0, "A-20%", "user1")
+        DiscountCoupon promotionWithPercentage = DiscountCoupon.userWithPercentage(availableDateTime, 20.0, "A-20%", "user1")
                 .minimum(BigDecimal.valueOf(3))
                 .maximum(BigDecimal.valueOf(4));
         DiscountService.instance().save(promotionWithAmount);
@@ -141,7 +141,7 @@ public class SupermarketTest {
 
         // ACT
         Receipt receipt = cashier.receipt(cart);
-        receipt = cashier.discount(receipt, "A-20%", "user1");
+        receipt = cashier.coupon(receipt, "A-20%", "user1");
         ReceiptPrinter.print(receipt);
     }
 

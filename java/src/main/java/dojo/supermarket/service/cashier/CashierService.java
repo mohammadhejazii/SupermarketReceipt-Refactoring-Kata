@@ -1,10 +1,10 @@
 package dojo.supermarket.service.cashier;
 
 import dojo.supermarket.model.base.BaseException;
-import dojo.supermarket.model.discount.Discount;
+import dojo.supermarket.model.discount.coupon.DiscountCoupon;
 import dojo.supermarket.model.discount.DiscountReceipt;
-import dojo.supermarket.model.discount.DiscountState;
-import dojo.supermarket.model.discount.DiscountUsage;
+import dojo.supermarket.model.discount.coupon.DiscountCouponState;
+import dojo.supermarket.model.discount.coupon.DiscountCouponUsage;
 import dojo.supermarket.model.product.Product;
 import dojo.supermarket.model.product.ProductQuantity;
 import dojo.supermarket.model.product.offer.Offer;
@@ -37,51 +37,51 @@ public class CashierService {
     }
 
 
-    public Receipt discount(final Receipt receipt,
-                            final String code,
-                            final String user) {
+    public Receipt coupon(final Receipt receipt,
+                          final String code,
+                          final String user) {
         if (receipt.getDiscountReceipt() != null) {
             throw BaseException.of("already used overall discount on this receipt.");
         }
-        Discount discount = DiscountService.instance().findByCode(code);
-        if (!discount.getAvailable().getFrom().isBefore(Instant.now()) || !discount.getAvailable().getTo().isAfter(Instant.now())) {
-            throw BaseException.of("this discount available time not in range from: %s , to: %s valid.", discount.getAvailable().getFrom().toString(), discount.getAvailable().getTo().toString());
+        DiscountCoupon discountCoupon = DiscountService.instance().findByCode(code);
+        if (!discountCoupon.getAvailable().getFrom().isBefore(Instant.now()) || !discountCoupon.getAvailable().getTo().isAfter(Instant.now())) {
+            throw BaseException.of("this discount available time not in range from: %s , to: %s valid.", discountCoupon.getAvailable().getFrom().toString(), discountCoupon.getAvailable().getTo().toString());
         }
-        if (discount.getUsage().equals(DiscountUsage.SPECIFIC_USER) && user == null) {
+        if (discountCoupon.getUsage().equals(DiscountCouponUsage.SPECIFIC_USER) && user == null) {
             throw BaseException.of("this discount valid for specific user,please enter candidate user.");
         }
-        if (discount.getUsage().equals(DiscountUsage.SPECIFIC_USER) && !user.equals(discount.getUser())) {
+        if (discountCoupon.getUsage().equals(DiscountCouponUsage.SPECIFIC_USER) && !user.equals(discountCoupon.getUser())) {
             throw BaseException.of("discount not match with candidate user: %s.", user);
         }
-        if (discount.getState() == DiscountState.EXPIRED) {
+        if (discountCoupon.getState() == DiscountCouponState.EXPIRED) {
             throw BaseException.of("discount with code %s already expired.", code);
         }
-        if (discount.getState() != DiscountState.APPROVED) {
+        if (discountCoupon.getState() != DiscountCouponState.APPROVED) {
             throw BaseException.of("discount with code %s is not active.", code);
         }
 
         BigDecimal totalPrice = receipt.totalPriceWithOfferApply();
-        if (totalPrice.compareTo(discount.getMinimumAffectedAmountOnPurchase()) < 0) {
-            throw BaseException.of("minimum amount is %s per purchase to use discount with code %s, total receipt is: %s", discount.getMinimumAffectedAmountOnPurchase().toString(), discount.getCode(), totalPrice.toString());
+        if (totalPrice.compareTo(discountCoupon.getMinimumAffectedAmountOnPurchase()) < 0) {
+            throw BaseException.of("minimum amount is %s per purchase to use discount with code %s, total receipt is: %s", discountCoupon.getMinimumAffectedAmountOnPurchase().toString(), discountCoupon.getCode(), totalPrice.toString());
         }
 
 
-        DiscountService.instance().verify(discount, user);
-        DiscountService.instance().used(discount, receipt);
+        DiscountService.instance().verify(discountCoupon, user);
+        DiscountService.instance().used(discountCoupon, receipt);
 
 
         Money total = Money.of(CurrencyUnit.EUR, totalPrice, RoundingMode.FLOOR);
         Money discountMoney;
 
 
-        switch (discount.getType()) {
-            case AMOUNT -> discountMoney = Money.of(CurrencyUnit.EUR, discount.getValue(), RoundingMode.FLOOR);
+        switch (discountCoupon.getType()) {
+            case AMOUNT -> discountMoney = Money.of(CurrencyUnit.EUR, discountCoupon.getValue(), RoundingMode.FLOOR);
             case PERCENT -> {
-                if (totalPrice.compareTo(discount.getMaximumAffectedAmountOnPurchase()) > 0) {
-                    BigDecimal discountAmount = discount.getMaximumAffectedAmountOnPurchase().multiply(discount.getValue()).divide(BigDecimal.valueOf(100));
+                if (totalPrice.compareTo(discountCoupon.getMaximumAffectedAmountOnPurchase()) > 0) {
+                    BigDecimal discountAmount = discountCoupon.getMaximumAffectedAmountOnPurchase().multiply(discountCoupon.getValue()).divide(BigDecimal.valueOf(100));
                     discountMoney = Money.of(CurrencyUnit.EUR, discountAmount, RoundingMode.FLOOR);
                 } else {
-                    BigDecimal discountAmount = totalPrice.multiply(discount.getValue()).divide(BigDecimal.valueOf(100));
+                    BigDecimal discountAmount = totalPrice.multiply(discountCoupon.getValue()).divide(BigDecimal.valueOf(100));
                     discountMoney = Money.of(CurrencyUnit.EUR, discountAmount, RoundingMode.FLOOR);
                 }
             }
@@ -90,7 +90,7 @@ public class CashierService {
 
 
         DiscountReceipt discountReceipt = DiscountReceipt.receipt("", total, discountMoney, receipt);
-        receipt.setDiscount(discount);
+        receipt.setCoupon(discountCoupon);
         receipt.setDiscountReceipt(discountReceipt);
         return receipt;
     }

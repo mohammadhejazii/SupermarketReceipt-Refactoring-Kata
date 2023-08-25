@@ -1,17 +1,17 @@
-package dojo.supermarket.model.discount;
+package dojo.supermarket.model.discount.coupon;
 
 /**
  * @author mohammad hejazi - smohammadhejazii@gmail.com
  * @since 2023.08.22
  */
-public enum DiscountType {
+public enum DiscountCouponType {
     AMOUNT("$"),
     PERCENT("%");
 
     private final String value;
 
 
-    DiscountType(final String value) {
+    DiscountCouponType(final String value) {
         this.value = value;
     }
 

@@ -31,7 +31,7 @@ public class AppliedDiscountRepository {
     public Optional<AppliedDiscount> findByCodeAndUser(final String code,
                                                        final String user) {
         return this.list.stream()
-                .filter(item -> item.getDiscount().getCode().equals(code))
+                .filter(item -> item.getCoupon().getCode().equals(code))
                 .filter(item -> item.getUser().equals(user))
                 .findFirst();
     }

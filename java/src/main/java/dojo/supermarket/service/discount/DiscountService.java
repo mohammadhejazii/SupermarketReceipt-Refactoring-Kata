@@ -1,8 +1,8 @@
 package dojo.supermarket.service.discount;
 
 import dojo.supermarket.model.base.BaseException;
-import dojo.supermarket.model.discount.Discount;
-import dojo.supermarket.model.discount.DiscountRepository;
+import dojo.supermarket.model.discount.coupon.DiscountCoupon;
+import dojo.supermarket.model.discount.coupon.DiscountCouponRepository;
 import dojo.supermarket.model.discount.applied.AppliedDiscount;
 import dojo.supermarket.model.discount.applied.AppliedDiscountRepository;
 import dojo.supermarket.model.receipt.Receipt;
@@ -27,29 +27,29 @@ public class DiscountService {
     }
 
 
-    public void save(final Discount discount) {
-        DiscountRepository.instance().save(discount);
+    public void save(final DiscountCoupon discountCoupon) {
+        DiscountCouponRepository.instance().save(discountCoupon);
     }
 
-    public Discount findByCode(final String code) {
-        return DiscountRepository.instance().findByCode(code).orElseThrow(BaseException.of("discount with code %s not found,code invalid.", code));
+    public DiscountCoupon findByCode(final String code) {
+        return DiscountCouponRepository.instance().findByCode(code).orElseThrow(BaseException.of("discount with code %s not found,code invalid.", code));
     }
 
 
-    public void verify(final Discount discount, final String user) {
-        AppliedDiscountRepository.instance().findByCodeAndUser(discount.getCode(), user).ifPresent(appliedDiscount -> {
-            throw BaseException.of("discount with code: %s already used by user: %s", discount.getCode(), user);
+    public void verify(final DiscountCoupon discountCoupon, final String user) {
+        AppliedDiscountRepository.instance().findByCodeAndUser(discountCoupon.getCode(), user).ifPresent(appliedDiscount -> {
+            throw BaseException.of("discount with code: %s already used by user: %s", discountCoupon.getCode(), user);
         });
     }
 
-    public void used(final Discount discount,
+    public void used(final DiscountCoupon discountCoupon,
                      final Receipt receipt) {
         AppliedDiscount appliedDiscount = AppliedDiscount.builder()
-                .user(discount.getUser())
+                .user(discountCoupon.getUser())
                 .receipt(receipt)
                 .used(true)
                 .usedDateTime(Instant.now())
-                .discount(discount)
+                .coupon(discountCoupon)
                 .build();
         AppliedDiscountRepository.instance().save(appliedDiscount);
     }

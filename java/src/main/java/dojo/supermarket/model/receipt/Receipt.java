@@ -1,6 +1,6 @@
 package dojo.supermarket.model.receipt;
 
-import dojo.supermarket.model.discount.Discount;
+import dojo.supermarket.model.discount.coupon.DiscountCoupon;
 import dojo.supermarket.model.discount.DiscountReceipt;
 import dojo.supermarket.model.product.Product;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class Receipt {
     private final List<ReceiptItem> items = new ArrayList<>();
     private final List<DiscountReceipt> offers = new ArrayList<>();
     private DiscountReceipt discountReceipt;
-    private Discount discount;
+    private DiscountCoupon coupon;
 
     public BigDecimal totalPriceWithOutOffer() {
         BigDecimal total = BigDecimal.ZERO;
@@ -32,7 +32,7 @@ public class Receipt {
     public BigDecimal totalPriceWithOfferApply() {
         BigDecimal total = totalPriceWithOutOffer();
         for (DiscountReceipt offer : offers) {
-            total = total.subtract(offer.getDiscount().getAmount());
+            total = total.subtract(offer.getDiscountPrice().getAmount());
         }
         return total;
     }
@@ -41,7 +41,7 @@ public class Receipt {
     public BigDecimal totalPriceWithOfferAndDiscountApply() {
         BigDecimal total = totalPriceWithOfferApply();
         if (discountReceipt != null) {
-            total = total.subtract(discountReceipt.getDiscount().getAmount());
+            total = total.subtract(discountReceipt.getDiscountPrice().getAmount());
         }
         return total;
     }
@@ -71,8 +71,8 @@ public class Receipt {
         return discountReceipt;
     }
 
-    public Discount getDiscount() {
-        return discount;
+    public DiscountCoupon getCoupon() {
+        return coupon;
     }
 
 

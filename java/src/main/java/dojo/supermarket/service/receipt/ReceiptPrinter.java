@@ -58,16 +58,16 @@ public class ReceiptPrinter {
 
 
     private String presentReceiptDiscount(Receipt receipt) {
-        String discount = formatLineWithWhitespace("use discount with code:", receipt.getDiscount().getCode());
-        String name = receipt.getDiscountReceipt().getReceipt().totalPriceWithOfferApply() + " - " + receipt.getDiscountReceipt().getDiscount().getAmount()  + receipt.getDiscount().getType().getValue()+ " :";
-        BigDecimal subtract = receipt.getDiscountReceipt().getReceipt().totalPriceWithOfferApply().subtract(receipt.getDiscountReceipt().getDiscount().getAmount());
+        String discount = formatLineWithWhitespace("use discount with code:", receipt.getCoupon().getCode());
+        String name = receipt.getDiscountReceipt().getReceipt().totalPriceWithOfferApply() + " - " + receipt.getDiscountReceipt().getDiscountPrice().getAmount()  + receipt.getCoupon().getType().getValue()+ " :";
+        BigDecimal subtract = receipt.getDiscountReceipt().getReceipt().totalPriceWithOfferApply().subtract(receipt.getDiscountReceipt().getDiscountPrice().getAmount());
         String value = presentPrice(subtract);
         return discount + formatLineWithWhitespace(name, value);
     }
 
     private String presentProductDiscount(DiscountReceipt discountReceipt) {
         String name = discountReceipt.getDescription() + "(" + discountReceipt.getProduct().name() + ")";
-        String value = presentPrice(discountReceipt.getDiscount().getAmount());
+        String value = presentPrice(discountReceipt.getDiscountPrice().getAmount());
         return formatLineWithWhitespace(name, value);
     }
 

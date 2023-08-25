@@ -1,6 +1,6 @@
 package dojo.supermarket.model.discount.applied;
 
-import dojo.supermarket.model.discount.Discount;
+import dojo.supermarket.model.discount.coupon.DiscountCoupon;
 import dojo.supermarket.model.receipt.Receipt;
 import lombok.*;
 
@@ -19,7 +19,7 @@ import java.time.Instant;
 public class AppliedDiscount implements Serializable {
 
     private Receipt receipt;
-    private Discount discount;
+    private DiscountCoupon coupon;
     private String user;
     private boolean used;
     private Instant usedDateTime;
